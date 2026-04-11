@@ -19,8 +19,84 @@ mongoose.connect("mongodb+srv://admin:Finance123@cluster0.hngsoga.mongodb.net/?a
 .then(() => console.log("DB Connected ✅"))
 .catch(err => console.log(err));
 
-// Routes changes are here
-// const userRoutes = require("./routes/userRoutes");
-// app.use("/api/users", userRoutes);
 
-// hiekjevnkejn
+
+// EXPENSE MODEL
+const Expense = require("./models/Expense");
+
+
+
+// Add Expense API
+app.post("/add-expense", async (req, res) => {
+  try {
+    const { title, amount, category } = req.body;
+
+    const newExpense = new Expense({
+      title,
+      amount,
+      category
+    });
+
+    await newExpense.save();
+
+    res.status(201).json({
+      message: "Expense added successfully",
+      data: newExpense
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// Get All Expenses API
+app.get("/get-expenses", async (req, res) => {
+  try {
+    const expenses = await Expense.find();
+
+    res.status(200).json(expenses);
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// Delete Expense API
+app.delete("/delete-expense/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await Expense.findByIdAndDelete(id);
+
+    res.status(200).json({
+      message: "Expense deleted successfully"
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update Expense API
+app.put("/update-expense/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, amount, category } = req.body;
+
+    const updatedExpense = await Expense.findByIdAndUpdate(
+      id,
+      { title, amount, category },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: "Expense updated successfully",
+      data: updatedExpense
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
