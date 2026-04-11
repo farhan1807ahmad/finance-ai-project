@@ -11,13 +11,6 @@ function Sidebar() {
 
   return (
     <div className="sidebar">
-      <div className="sidebar-header">
-        <div className="logo">
-          <span className="logo-icon">🎯</span>
-          <h2>FinanceAI</h2>
-        </div>
-      </div>
-
       <nav className="sidebar-nav">
         <Link to="/" className={`nav-item ${isActive('/') ? 'active' : ''}`}>
           <span className="nav-icon">📊</span>
