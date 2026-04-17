@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import UserProfile from './UserProfile';
 import './Sidebar.css';
 
 function Sidebar() {
@@ -12,7 +13,7 @@ function Sidebar() {
   return (
     <div className="sidebar">
       <nav className="sidebar-nav">
-        <Link to="/" className={`nav-item ${isActive('/') ? 'active' : ''}`}>
+        <Link to="/dashboard" className={`nav-item ${isActive('/dashboard') ? 'active' : ''}`}>
           <span className="nav-icon">📊</span>
           <span className="nav-text">Dashboard</span>
         </Link>
@@ -43,17 +44,7 @@ function Sidebar() {
       </nav>
 
       <div className="sidebar-footer">
-        <div className="user-profile">
-          <div className="user-avatar">AM</div>
-          <div className="user-info">
-            <p className="user-name">Alex Morgan</p>
-            <p className="user-status">Premium</p>
-          </div>
-        </div>
-        <div className="logout-btn">
-          <span className="logout-icon">🚪</span>
-          <span className="logout-text">Logout</span>
-        </div>
+        <UserProfile />
       </div>
     </div>
   );
