@@ -92,24 +92,3 @@ function Dashboard() {
 }
 
 export default Dashboard;
-
-        <div className="stats-grid">
-          {stats.map((stat, index) => (
-            <StatCard key={index} {...stat} />
-          ))}
-        </div>
-
-        <div className="dashboard-content">
-          <div className="content-left">
-            <RecentActivity refreshTrigger={refreshTrigger} />
-          </div>
-          <div className="content-right">
-            <QuickAddExpense onExpenseAdded={handleExpenseAdded} />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default Dashboard;

@@ -1,15 +1,99 @@
 const express = require("express");
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const { addExpense, getExpenses, deleteExpense } = require("./db");
+const User = require("./models/User");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
+// Initialize User table
+User.createTable();
+
+// JWT Secret
+const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
+
+// Middleware to verify JWT token
+const verifyToken = (req, res, next) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  
+  if (!token) {
+    return res.status(401).json({ error: "No token provided" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.userId = decoded.userId;
+    next();
+  } catch (error) {
+    res.status(401).json({ error: "Invalid token" });
+  }
+};
+
 app.get("/", (req, res) => {
   res.send("API is running 🚀");
+});
+
+// ============ AUTHENTICATION ROUTES ============
+
+// Register
+app.post("/auth/register", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.register(email, password);
+
+    // Generate JWT token
+    const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.status(201).json({
+      message: "User registered successfully",
+      user,
+      token,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Login
+app.post("/auth/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.login(email, password);
+
+    // Generate JWT token
+    const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.status(200).json({
+      message: "Login successful",
+      user,
+      token,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Get current user (protected route)
+app.get("/auth/me", verifyToken, (req, res) => {
+  try {
+    const user = User.getUserById(req.userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 const PORT = process.env.PORT || 5000;

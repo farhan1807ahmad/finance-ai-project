@@ -1,11 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  signOut,
-  onAuthStateChanged 
-} from 'firebase/auth';
-import { auth } from './firebase';
 
 const AuthContext = createContext();
 
@@ -18,36 +11,58 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const API_URL = 'http://localhost:5000';
+
   // Check if user is logged in on mount
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
+    const token = localStorage.getItem('authToken');
+    const storedUser = localStorage.getItem('user');
 
-    return unsubscribe;
+    if (token && storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+
+    setLoading(false);
   }, []);
 
   // Sign Up
   const signup = async (email, password) => {
     try {
       setError(null);
-      
+
       // Validate inputs
       if (!email || !password) {
         throw new Error('Email and password are required');
       }
-      
+
       if (password.length < 6) {
         throw new Error('Password must be at least 6 characters');
       }
-      
-      const result = await createUserWithEmailAndPassword(auth, email, password);
-      setUser(result.user);
-      return result.user;
+
+      const response = await fetch(`${API_URL}/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Registration failed');
+      }
+
+      // Store token and user
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      setUser(data.user);
+      return data.user;
     } catch (err) {
-      setError(err.message);
-      throw err;
+      const errorMsg = err.message || 'Registration failed';
+      setError(errorMsg);
+      throw new Error(errorMsg);
     }
   };
 
@@ -55,24 +70,36 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       setError(null);
-      
+
       // Validate inputs
       if (!email || !password) {
         throw new Error('Email and password are required');
       }
-      
-      const result = await signInWithEmailAndPassword(auth, email, password);
-      setUser(result.user);
-      return result.user;
-    } catch (err) {
-      if (err.code === 'auth/user-not-found') {
-        setError('User not found');
-      } else if (err.code === 'auth/wrong-password') {
-        setError('Invalid password');
-      } else {
-        setError(err.message);
+
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Login failed');
       }
-      throw err;
+
+      // Store token and user
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      setUser(data.user);
+      return data.user;
+    } catch (err) {
+      const errorMsg = err.message || 'Login failed';
+      setError(errorMsg);
+      throw new Error(errorMsg);
     }
   };
 
@@ -80,7 +107,8 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       setError(null);
-      await signOut(auth);
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
       setUser(null);
     } catch (err) {
       setError(err.message);
