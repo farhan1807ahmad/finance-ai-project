@@ -37,10 +37,10 @@ function Sidebar() {
           <span className="nav-icon">🔮</span>
           <span className="nav-text">Predictions</span>
         </div>
-        <div className="nav-item">
+        <Link to="/settings" className={`nav-item ${isActive('/settings') ? 'active' : ''}`}>
           <span className="nav-icon">⚙️</span>
           <span className="nav-text">Settings</span>
-        </div>
+        </Link>
       </nav>
 
       <div className="sidebar-footer">
