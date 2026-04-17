@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import Dashboard from './pages/Dashboard';
 import Activity from './pages/Activity';
 import Analytics from './pages/Analytics';
+import Login from './pages/Login';
+import SignUp from './pages/SignUp';
+import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
 function App() {
@@ -10,13 +14,45 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<Dashboard onPageChange={setCurrentPage} />} />
-          <Route path="/activity" element={<Activity onPageChange={setCurrentPage} />} />
-          <Route path="/analytics" element={<Analytics onPageChange={setCurrentPage} />} />
-        </Routes>
-      </div>
+      <AuthProvider>
+        <div className="App">
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            
+            {/* Protected Routes */}
+            <Route 
+              path="/" 
+              element={<Navigate to="/dashboard" />} 
+            />
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <Dashboard onPageChange={setCurrentPage} />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/activity" 
+              element={
+                <ProtectedRoute>
+                  <Activity onPageChange={setCurrentPage} />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/analytics" 
+              element={
+                <ProtectedRoute>
+                  <Analytics onPageChange={setCurrentPage} />
+                </ProtectedRoute>
+              } 
+            />
+          </Routes>
+        </div>
+      </AuthProvider>
     </Router>
   );
 }
