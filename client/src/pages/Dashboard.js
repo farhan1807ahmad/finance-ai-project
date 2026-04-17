@@ -67,18 +67,3 @@ function Dashboard() {
 }
 
 export default Dashboard;
-
-        <div className="dashboard-content">
-          <div className="content-left">
-            <RecentActivity refreshTrigger={refreshTrigger} />
-          </div>
-          <div className="content-right">
-            <QuickAddExpense onExpenseAdded={handleExpenseAdded} />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default Dashboard;
