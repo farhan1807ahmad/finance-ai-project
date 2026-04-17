@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import Dashboard from './pages/Dashboard';
 import Activity from './pages/Activity';
 import Analytics from './pages/Analytics';
+import Settings from './pages/Settings';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -47,6 +48,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Analytics onPageChange={setCurrentPage} />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/settings" 
+              element={
+                <ProtectedRoute>
+                  <Settings onPageChange={setCurrentPage} />
                 </ProtectedRoute>
               } 
             />
