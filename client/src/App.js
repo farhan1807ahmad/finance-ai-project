@@ -4,6 +4,8 @@ import { AuthProvider } from './context/AuthContext';
 import Dashboard from './pages/Dashboard';
 import Activity from './pages/Activity';
 import Analytics from './pages/Analytics';
+import Budgets from './pages/Budgets';
+import Insights from './pages/Insights';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
@@ -53,6 +55,22 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Analytics onPageChange={setCurrentPage} />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/budgets" 
+                element={
+                  <ProtectedRoute>
+                    <Budgets onPageChange={setCurrentPage} />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/insights" 
+                element={
+                  <ProtectedRoute>
+                    <Insights onPageChange={setCurrentPage} />
                   </ProtectedRoute>
                 } 
               />

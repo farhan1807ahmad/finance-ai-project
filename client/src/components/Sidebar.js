@@ -33,18 +33,18 @@ function Sidebar() {
           <span className="nav-icon">📈</span>
           <span className="nav-text">Activity</span>
         </Link>
-        <div className="nav-item">
+        <Link to="/insights" className={`nav-item ${isActive('/insights') ? 'active' : ''}`}>
           <span className="nav-icon">🤖</span>
           <span className="nav-text">Insights (AI)</span>
-        </div>
+        </Link>
         <Link to="/analytics" className={`nav-item ${isActive('/analytics') ? 'active' : ''}`}>
           <span className="nav-icon">📉</span>
           <span className="nav-text">Analytics</span>
         </Link>
-        <div className="nav-item">
+        <Link to="/budgets" className={`nav-item ${isActive('/budgets') ? 'active' : ''}`}>
           <span className="nav-icon">💼</span>
           <span className="nav-text">Budgets</span>
-        </div>
+        </Link>
         <div className="nav-item">
           <span className="nav-icon">🔮</span>
           <span className="nav-text">Predictions</span>
