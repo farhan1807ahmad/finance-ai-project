@@ -1,4 +1,4 @@
-import React, { useState, createContext } from 'react';
+import React, { useState, createContext, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Dashboard from './pages/Dashboard';
@@ -17,6 +17,13 @@ export const SidebarContext = createContext();
 function App() {
   const [currentPage, setCurrentPage] = useState('Dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // Apply saved theme on mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.body.setAttribute('data-theme', savedTheme);
+  }, []);
 
   return (
     <Router>
