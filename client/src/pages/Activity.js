@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Sidebar from '../components/Sidebar';
+import { SidebarContext } from '../App';
 import './Activity.css';
 
 function Activity() {
@@ -7,6 +8,7 @@ function Activity() {
   const [filter, setFilter] = useState('All');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const { sidebarOpen } = useContext(SidebarContext);
 
   useEffect(() => {
     fetchExpenses();
@@ -71,7 +73,10 @@ function Activity() {
   return (
     <div className="activity-page">
       <Sidebar currentPage="Activity" />
-      <div className="activity-main">
+      <div 
+        className="activity-main"
+        style={{ marginLeft: sidebarOpen ? '200px' : '60px' }}
+      >
         <div className="activity-header">
           <h1 className="page-title">Activity</h1>
           <p className="page-subtitle">Complete timeline of your transactions</p>

@@ -1,17 +1,29 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import UserProfile from './UserProfile';
+import { SidebarContext } from '../App';
 import './Sidebar.css';
 
 function Sidebar() {
   const location = useLocation();
+  const { sidebarOpen, setSidebarOpen } = useContext(SidebarContext);
 
   const isActive = (path) => {
     return location.pathname === path;
   };
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
+      <div className="sidebar-header">
+        <button className="sidebar-toggle" onClick={toggleSidebar} title="Toggle Sidebar">
+          <span className="toggle-icon">{sidebarOpen ? '✕' : '☰'}</span>
+        </button>
+      </div>
+      
       <nav className="sidebar-nav">
         <Link to="/dashboard" className={`nav-item ${isActive('/dashboard') ? 'active' : ''}`}>
           <span className="nav-icon">📊</span>

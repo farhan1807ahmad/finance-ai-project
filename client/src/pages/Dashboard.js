@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { SidebarContext } from '../App';
 import Sidebar from '../components/Sidebar';
 import StatCard from '../components/StatCard';
 import RecentActivity from '../components/RecentActivity';
@@ -9,6 +10,7 @@ import './Dashboard.css';
 function Dashboard() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const { user } = useAuth();
+  const { sidebarOpen } = useContext(SidebarContext);
 
   const handleExpenseAdded = () => {
     // Trigger refresh of RecentActivity
@@ -39,7 +41,10 @@ function Dashboard() {
   return (
     <div className="dashboard-container">
       <Sidebar />
-      <div className="dashboard-main">
+      <div 
+        className="dashboard-main"
+        style={{ marginLeft: sidebarOpen ? '200px' : '60px' }}
+      >
         <div className="dashboard-header">
           <div>
             <h1 className="page-title">Dashboard</h1>

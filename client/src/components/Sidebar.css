@@ -9,11 +9,42 @@
   left: 0;
   top: 0;
   overflow-y: auto;
+  transition: width 0.3s ease;
+  z-index: 1000;
+}
+
+.sidebar.closed {
+  width: 60px;
 }
 
 .sidebar-header {
-  padding: 20px;
+  padding: 15px 10px;
   border-bottom: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.sidebar-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #1a1a1a;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.sidebar-toggle:hover {
+  background-color: #e9ecef;
+}
+
+.toggle-icon {
+  font-size: 20px;
 }
 
 .logo {
@@ -52,6 +83,16 @@
   font-size: 14px;
   font-weight: 500;
   text-decoration: none;
+  white-space: nowrap;
+}
+
+.sidebar.closed .nav-item {
+  padding: 12px 10px;
+  justify-content: center;
+}
+
+.sidebar.closed .nav-text {
+  display: none;
 }
 
 .nav-item:hover {
@@ -68,6 +109,7 @@
 
 .nav-icon {
   font-size: 18px;
+  flex-shrink: 0;
 }
 
 .sidebar-footer {
@@ -84,6 +126,11 @@
   border-bottom: 1px solid #e9ecef;
 }
 
+.sidebar.closed .user-profile {
+  flex-direction: column;
+  gap: 8px;
+}
+
 .user-avatar {
   width: 40px;
   height: 40px;
@@ -95,6 +142,7 @@
   color: white;
   font-weight: 600;
   font-size: 14px;
+  flex-shrink: 0;
 }
 
 .user-info {

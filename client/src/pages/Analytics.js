@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Sidebar from '../components/Sidebar';
+import { SidebarContext } from '../App';
 import {
   CategoryBreakdownChart,
   SpendingTrendChart,
@@ -12,12 +13,16 @@ import './Analytics.css';
 
 function Analytics() {
   const { categoryBreakdown, spendingTrend, summary, loading, error } = useAnalyticsData();
+  const { sidebarOpen } = useContext(SidebarContext);
 
   if (error) {
     return (
       <div className="analytics-page">
         <Sidebar />
-        <div className="analytics-main">
+        <div 
+          className="analytics-main"
+          style={{ marginLeft: sidebarOpen ? '200px' : '60px' }}
+        >
           <p className="error-message">Error: {error}</p>
         </div>
       </div>
@@ -27,7 +32,10 @@ function Analytics() {
   return (
     <div className="analytics-page">
       <Sidebar />
-      <div className="analytics-main">
+      <div 
+        className="analytics-main"
+        style={{ marginLeft: sidebarOpen ? '200px' : '60px' }}
+      >
         {/* Header */}
         <div className="analytics-header">
           <h1 className="page-title">Analytics</h1>

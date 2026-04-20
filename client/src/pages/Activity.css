@@ -7,8 +7,8 @@
 .activity-main {
   flex: 1;
   padding: 30px;
-  margin-left: 200px;
   overflow-y: auto;
+  transition: margin-left 0.3s ease;
 }
 
 .activity-header {
