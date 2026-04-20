@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Sidebar from '../components/Sidebar';
+import { SidebarContext } from '../App';
 import { EXPENSE_CATEGORIES } from '../utils/categories';
 import './Budgets.css';
 
 function Budgets() {
+  const { sidebarOpen } = useContext(SidebarContext);
   // Initialize state from localStorage
   const [budgets, setBudgets] = useState(() => {
     try {
@@ -94,7 +96,10 @@ function Budgets() {
     <div className="budgets-container">
       <Sidebar />
 
-      <div className="budgets-main">
+      <div 
+        className="budgets-main"
+        style={{ marginLeft: sidebarOpen ? '200px' : '60px' }}
+      >
         <div className="budgets-header">
           <div>
             <h1 className="page-title">Budgets</h1>

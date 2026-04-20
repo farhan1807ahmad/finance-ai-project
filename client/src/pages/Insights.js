@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Sidebar from '../components/Sidebar';
+import { SidebarContext } from '../App';
 import './Insights.css';
 
 function Insights() {
+  const { sidebarOpen } = useContext(SidebarContext);
   const [insights, setInsights] = useState('');
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -33,7 +35,10 @@ function Insights() {
     <div className="insights-container">
       <Sidebar />
 
-      <div className="insights-main">
+      <div 
+        className="insights-main"
+        style={{ marginLeft: sidebarOpen ? '200px' : '60px' }}
+      >
         <div className="insights-header">
           <div>
             <h1 className="page-title">💡 AI Insights</h1>

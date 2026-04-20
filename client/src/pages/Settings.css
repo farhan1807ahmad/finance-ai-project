@@ -1,9 +1,16 @@
 .settings-main {
   flex: 1;
-  margin-left: 200px;
   overflow-y: auto;
   padding: 30px;
   background-color: #f5f6f8;
+  transition: margin-left 0.3s ease;
+  min-width: 0;
+}
+
+@media (max-width: 1000px) {
+  .settings-main {
+    padding: 20px;
+  }
 }
 
 .settings-header {

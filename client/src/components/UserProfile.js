@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { SidebarContext } from '../App';
 import './UserProfile.css';
 
 function UserProfile() {
   const [logoutLoading, setLogoutLoading] = useState(false);
   const { user, logout } = useAuth();
+  const { sidebarOpen } = useContext(SidebarContext);
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -39,20 +41,23 @@ function UserProfile() {
     <div className="user-profile-card">
       <div className="user-profile-header">
         <div className="user-avatar-large">{getInitials(user?.email)}</div>
-        <div className="user-info-details">
-          <p className="user-name-display">{getDisplayName(user?.email)}</p>
-          <p className="user-email-display">{user?.email}</p>
-          <p className="user-tier">Premium Member</p>
-        </div>
+        {sidebarOpen && (
+          <div className="user-info-details">
+            <p className="user-name-display">{getDisplayName(user?.email)}</p>
+            <p className="user-email-display">{user?.email}</p>
+            <p className="user-tier">Premium Member</p>
+          </div>
+        )}
       </div>
 
       <button 
         className="logout-button" 
         onClick={handleLogout}
         disabled={logoutLoading}
+        title={logoutLoading ? 'Logging out...' : 'Logout'}
       >
         <span className="logout-icon">🚪</span>
-        {logoutLoading ? 'Logging out...' : 'Logout'}
+        {sidebarOpen && (logoutLoading ? 'Logging out...' : 'Logout')}
       </button>
     </div>
   );

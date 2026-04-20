@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { SidebarContext } from '../App';
 import Sidebar from '../components/Sidebar';
 import './Settings.css';
 
 function Settings() {
   const { user } = useAuth();
+  const { sidebarOpen } = useContext(SidebarContext);
   const [settings, setSettings] = useState({
     theme: localStorage.getItem('theme') || 'light',
     notifications: localStorage.getItem('notifications') === 'true' || true,
@@ -39,7 +41,10 @@ function Settings() {
   return (
     <div className="dashboard-container">
       <Sidebar />
-      <div className="settings-main">
+      <div 
+        className="settings-main"
+        style={{ marginLeft: sidebarOpen ? '200px' : '60px' }}
+      >
         <div className="settings-header">
           <h1 className="settings-title">Settings</h1>
           <p className="settings-subtitle">Manage your account preferences</p>
