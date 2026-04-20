@@ -5,6 +5,14 @@ require("dotenv").config();
 const { addExpense, getExpenses, deleteExpense } = require("./db");
 const User = require("./models/User");
 
+// Initialize OpenAI (optional - install with: npm install openai)
+let OpenAI;
+try {
+  OpenAI = require("openai").default;
+} catch (e) {
+  console.log("⚠️  OpenAI package not installed. Install with: npm install openai");
+}
+
 const app = express();
 
 app.use(cors());
@@ -242,5 +250,105 @@ app.get("/analytics/summary", (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// ============ AI INSIGHTS ENDPOINT ============
+
+app.get("/insights/ai", async (req, res) => {
+  try {
+    if (!OpenAI) {
+      return res.status(500).json({ 
+        error: "OpenAI not configured. Install with: npm install openai" 
+      });
+    }
+
+    if (!process.env.OPENAI_API_KEY) {
+      return res.status(500).json({ 
+        error: "OPENAI_API_KEY not set in .env file" 
+      });
+    }
+
+    const expenses = getExpenses();
+
+    if (expenses.length === 0) {
+      return res.status(200).json({
+        insights: "No expense data available yet. Start adding expenses to get personalized financial insights!",
+        recommendations: []
+      });
+    }
+
+    // Prepare data for AI analysis
+    const categorySpending = {};
+    expenses.forEach(exp => {
+      categorySpending[exp.category] = (categorySpending[exp.category] || 0) + exp.amount;
+    });
+
+    const totalSpent = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+    const avgTransaction = (totalSpent / expenses.length).toFixed(2);
+    const topCategory = Object.entries(categorySpending).sort((a, b) => b[1] - a[1])[0];
+
+    const thisMonth = expenses.filter(exp => {
+      const expenseDate = new Date(exp.date);
+      const today = new Date();
+      return expenseDate.getMonth() === today.getMonth() && 
+             expenseDate.getFullYear() === today.getFullYear();
+    });
+
+    const monthlySpend = thisMonth.reduce((sum, exp) => sum + exp.amount, 0).toFixed(2);
+
+    // Create prompt for AI
+    const prompt = `Analyze this personal finance data and provide 3-4 specific, actionable insights:
+
+Total Expenses: ₹${totalSpent.toFixed(2)}
+Number of Transactions: ${expenses.length}
+Average Transaction: ₹${avgTransaction}
+This Month's Spending: ₹${monthlySpend}
+Top Category: ${topCategory[0]} (₹${topCategory[1].toFixed(2)})
+
+Category Breakdown:
+${Object.entries(categorySpending)
+  .sort((a, b) => b[1] - a[1])
+  .map(([cat, amount]) => `- ${cat}: ₹${amount.toFixed(2)}`)
+  .join('\n')}
+
+Please provide:
+1. A brief overall spending assessment
+2. 2-3 specific money-saving recommendations
+3. One positive observation about their spending habits
+Keep the response concise and actionable.`;
+
+    // Call OpenAI API
+    const client = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY
+    });
+
+    const message = await client.messages.create({
+      model: "claude-3-5-sonnet-20241022",
+      max_tokens: 1024,
+      messages: [
+        {
+          role: "user",
+          content: prompt
+        }
+      ]
+    });
+
+    const insights = message.content[0].type === 'text' ? message.content[0].text : '';
+
+    res.status(200).json({
+      insights: insights,
+      summary: {
+        totalSpent: parseFloat(totalSpent.toFixed(2)),
+        monthlySpend: parseFloat(monthlySpend),
+        topCategory: topCategory[0],
+        transactionCount: expenses.length
+      }
+    });
+  } catch (error) {
+    console.error("AI Insights Error:", error.message);
+    res.status(500).json({ 
+      error: "Failed to generate insights: " + error.message 
+    });
   }
 });
