@@ -18,7 +18,7 @@ function App() {
       <AuthProvider>
         <div className="App">
           <Routes>
-          
+
             {/* Public Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
@@ -66,5 +66,6 @@ function App() {
     </Router>
   );
 }
+
 
 export default App;
