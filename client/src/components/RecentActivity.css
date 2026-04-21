@@ -4,6 +4,13 @@
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   border: 1px solid #f0f0f0;
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+[data-theme="dark"] .recent-activity {
+  background: #1a1a1a;
+  border-color: #333333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .activity-header {
@@ -13,6 +20,11 @@
   margin-bottom: 20px;
   padding-bottom: 15px;
   border-bottom: 1px solid #f0f0f0;
+  transition: border-color 0.3s ease;
+}
+
+[data-theme="dark"] .activity-header {
+  border-bottom-color: #333333;
 }
 
 .activity-header h3 {
@@ -20,6 +32,11 @@
   font-size: 16px;
   font-weight: 600;
   color: #1a1a1a;
+  transition: color 0.3s ease;
+}
+
+[data-theme="dark"] .activity-header h3 {
+  color: #ffffff;
 }
 
 .view-all-link {
@@ -49,6 +66,10 @@
   transition: all 0.3s ease;
 }
 
+[data-theme="dark"] .activity-item {
+  border-bottom-color: #2a2a2a;
+}
+
 .activity-item:last-child {
   border-bottom: none;
 }
@@ -57,6 +78,10 @@
   background-color: #f9f9f9;
   padding: 12px 8px;
   border-radius: 6px;
+}
+
+[data-theme="dark"] .activity-item:hover {
+  background-color: #2a2a2a;
 }
 
 .activity-details {
@@ -68,12 +93,22 @@
   font-size: 14px;
   font-weight: 600;
   color: #1a1a1a;
+  transition: color 0.3s ease;
+}
+
+[data-theme="dark"] .activity-title {
+  color: #ffffff;
 }
 
 .activity-meta {
   margin: 4px 0 0 0;
   font-size: 12px;
   color: #999;
+  transition: color 0.3s ease;
+}
+
+[data-theme="dark"] .activity-meta {
+  color: #999999;
 }
 
 .activity-amount {

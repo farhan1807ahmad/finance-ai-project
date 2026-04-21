@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import { EXPENSE_CATEGORIES } from '../utils/categories';
 import './QuickAddExpense.css';
 
 function QuickAddExpense({ onExpenseAdded }) {
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
-  const [category, setCategory] = useState('Food');
+  const [category, setCategory] = useState(EXPENSE_CATEGORIES[0]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -41,7 +42,7 @@ function QuickAddExpense({ onExpenseAdded }) {
       // Reset form
       setDescription('');
       setAmount('');
-      setCategory('Food');
+      setCategory(EXPENSE_CATEGORIES[0]);
 
       // Notify parent component to refresh expenses
       if (onExpenseAdded) {
@@ -94,14 +95,11 @@ function QuickAddExpense({ onExpenseAdded }) {
             onChange={(e) => setCategory(e.target.value)}
             className="form-select"
           >
-            <option value="Food">Food</option>
-            <option value="Transportation">Transportation</option>
-            <option value="Entertainment">Entertainment</option>
-            <option value="Groceries">Groceries</option>
-            <option value="Utilities">Utilities</option>
-            <option value="Healthcare">Healthcare</option>
-            <option value="Shopping">Shopping</option>
-            <option value="Other">Other</option>
+            {EXPENSE_CATEGORIES.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
           </select>
         </div>
       </div>

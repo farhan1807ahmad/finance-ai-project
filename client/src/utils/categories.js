@@ -1,6 +1,6 @@
 // Centralized category definitions
 export const EXPENSE_CATEGORIES = [
-  'Food & Dining',
+  'Food',
   'Transportation',
   'Utilities',
   'Shopping',
@@ -17,7 +17,7 @@ export const EXPENSE_CATEGORIES = [
 
 export const getCategoryIcon = (category) => {
   const icons = {
-    'Food & Dining': '🍔',
+    'Food': '🍔',
     'Transportation': '🚗',
     'Utilities': '💡',
     'Shopping': '🛍️',
