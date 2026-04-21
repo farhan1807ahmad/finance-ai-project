@@ -15,6 +15,8 @@ function Settings() {
     privateProfile: localStorage.getItem('privateProfile') === 'true' || false,
   });
 
+  const [editingName, setEditingName] = useState(false);
+  const [editedName, setEditedName] = useState(localStorage.getItem('displayName') || '');
   const [saveMessage, setSaveMessage] = useState('');
 
   const handleToggle = (key) => {
@@ -29,11 +31,28 @@ function Settings() {
     setSettings({ ...settings, theme });
     localStorage.setItem('theme', theme);
     document.documentElement.setAttribute('data-theme', theme);
+    document.body.setAttribute('data-theme', theme);
     setSaveMessage('✅ Theme updated!');
     setTimeout(() => setSaveMessage(''), 2000);
   };
 
+  const handleSaveDisplayName = () => {
+    if (editedName.trim()) {
+      localStorage.setItem('displayName', editedName);
+      setEditingName(false);
+      setSaveMessage('✅ Display name updated!');
+      setTimeout(() => setSaveMessage(''), 2000);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditedName(localStorage.getItem('displayName') || '');
+    setEditingName(false);
+  };
+
   const getDisplayName = (email) => {
+    const savedName = localStorage.getItem('displayName');
+    if (savedName) return savedName;
     if (!email) return 'User';
     return email.split('@')[0].split('.').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
   };
@@ -68,7 +87,45 @@ function Settings() {
                 <h3>Display Name</h3>
                 <p className="setting-desc">How your name appears</p>
               </div>
-              <span className="setting-value">{getDisplayName(user?.email)}</span>
+              {!editingName ? (
+                <div className="setting-value-with-btn">
+                  <span className="setting-value">{getDisplayName(user?.email)}</span>
+                  <button 
+                    className="btn-edit"
+                    onClick={() => {
+                      setEditedName(getDisplayName(user?.email));
+                      setEditingName(true);
+                    }}
+                  >
+                    ✏️ Edit
+                  </button>
+                </div>
+              ) : (
+                <div className="edit-name-container">
+                  <input
+                    type="text"
+                    className="edit-name-input"
+                    value={editedName}
+                    onChange={(e) => setEditedName(e.target.value)}
+                    placeholder="Enter display name"
+                    autoFocus
+                  />
+                  <div className="edit-name-buttons">
+                    <button 
+                      className="btn-save"
+                      onClick={handleSaveDisplayName}
+                    >
+                      ✓ Save
+                    </button>
+                    <button 
+                      className="btn-cancel"
+                      onClick={handleCancelEdit}
+                    >
+                      ✕ Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="setting-item border-top">
               <div className="setting-info">

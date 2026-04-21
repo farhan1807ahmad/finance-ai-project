@@ -184,3 +184,58 @@
 .logout-icon {
   font-size: 16px;
 }
+
+/* Dark Theme Support */
+[data-theme="dark"] .sidebar {
+  background-color: #1a1a1a;
+  border-right-color: #333333;
+}
+
+[data-theme="dark"] .sidebar-header {
+  border-bottom-color: #333333;
+}
+
+[data-theme="dark"] .sidebar-toggle {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .sidebar-toggle:hover {
+  background-color: #333333;
+}
+
+[data-theme="dark"] .nav-item {
+  color: #999999;
+}
+
+[data-theme="dark"] .nav-item:hover {
+  background-color: #333333;
+  color: #ffffff;
+}
+
+[data-theme="dark"] .nav-item.active {
+  background-color: #667eea;
+  color: #ffffff;
+  margin: 0 10px;
+  border-radius: 8px;
+}
+
+[data-theme="dark"] .sidebar-footer {
+  border-top-color: #333333;
+}
+
+[data-theme="dark"] .user-name {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .user-status {
+  color: #999999;
+}
+
+[data-theme="dark"] .logout-btn {
+  color: #999999;
+}
+
+[data-theme="dark"] .logout-btn:hover {
+  background-color: #333333;
+  color: #ffffff;
+}

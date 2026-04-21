@@ -11,8 +11,120 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #f5f6f8;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+[data-theme="dark"] body {
+  background-color: #0f0f0f;
+  color: #ffffff;
 }
 
 .App {
   min-height: 100vh;
+}
+
+/* Dark Theme Global Styles */
+[data-theme="dark"] {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #0f0f0f;
+  --text-primary: #ffffff;
+  --text-secondary: #d0d0d0;
+  --text-tertiary: #999999;
+  --border-color: #333333;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .dashboard-container,
+[data-theme="dark"] .activity-page,
+[data-theme="dark"] .analytics-page,
+[data-theme="dark"] .budgets-container,
+[data-theme="dark"] .insights-container {
+  background-color: #0f0f0f;
+}
+
+[data-theme="dark"] .dashboard-main,
+[data-theme="dark"] .activity-main,
+[data-theme="dark"] .analytics-main,
+[data-theme="dark"] .budgets-main,
+[data-theme="dark"] .insights-main,
+[data-theme="dark"] .settings-main {
+  background-color: #0f0f0f;
+}
+
+[data-theme="dark"] .page-title {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .page-subtitle {
+  color: #999999;
+}
+
+[data-theme="dark"] .sidebar {
+  background-color: #1a1a1a;
+  border-right-color: #333333;
+}
+
+[data-theme="dark"] .nav-item {
+  color: #999999;
+}
+
+[data-theme="dark"] .nav-item:hover {
+  background-color: #333333;
+  color: #ffffff;
+}
+
+[data-theme="dark"] .nav-item.active {
+  background-color: #667eea;
+  color: #ffffff;
+}
+
+[data-theme="dark"] .stats-grid > * {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .stat-card {
+  background-color: #1a1a1a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .stat-label {
+  color: #999999;
+}
+
+[data-theme="dark"] .stat-value {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .insight-card,
+[data-theme="dark"] .chart-wrapper,
+[data-theme="dark"] .filter-btn,
+[data-theme="dark"] .transaction-item {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border-color: #333333;
+}
+
+[data-theme="dark"] .filter-btn {
+  background-color: #333333;
+  color: #ffffff;
+}
+
+[data-theme="dark"] .filter-btn.active {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+}
+
+[data-theme="dark"] .transaction-details {
+  color: #d0d0d0;
+}
+
+[data-theme="dark"] .transaction-title {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .transaction-meta {
+  color: #999999;
 }

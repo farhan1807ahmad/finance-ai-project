@@ -192,32 +192,176 @@ input:checked + .slider:before {
   transform: translateY(-2px);
 }
 
-/* Theme Selector */
-.theme-selector {
+/* Edit Display Name */
+.setting-value-with-btn {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-end;
 }
 
-.theme-btn {
-  padding: 8px 16px;
-  border: 2px solid #e9ecef;
-  background-color: white;
+.btn-edit {
+  padding: 6px 12px;
+  background-color: #667eea;
+  color: white;
+  border: none;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-edit:hover {
+  background-color: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.edit-name-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.edit-name-input {
+  padding: 10px 12px;
+  border: 2px solid #667eea;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.edit-name-input:focus {
+  outline: none;
+  border-color: #5568d3;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.edit-name-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.btn-save,
+.btn-cancel {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-save {
+  background-color: #10b981;
+  color: white;
+}
+
+.btn-save:hover {
+  background-color: #059669;
+  transform: translateY(-2px);
+}
+
+.btn-cancel {
+  background-color: #e9ecef;
   color: #1a1a1a;
 }
 
-.theme-btn:hover {
+.btn-cancel:hover {
+  background-color: #dee2e6;
+  transform: translateY(-2px);
+}
+
+/* Dark Theme Support */
+[data-theme="dark"] {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #0f0f0f;
+  --text-primary: #ffffff;
+  --text-secondary: #d0d0d0;
+  --text-tertiary: #999999;
+  --border-color: #333333;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .settings-main {
+  background-color: #0f0f0f;
+}
+
+[data-theme="dark"] .settings-title {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .settings-subtitle {
+  color: #999999;
+}
+
+[data-theme="dark"] .section-title {
+  color: #ffffff;
+  border-bottom-color: #333333;
+}
+
+[data-theme="dark"] .settings-card {
+  background-color: #1a1a1a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .setting-item {
+  border-top-color: #333333;
+}
+
+[data-theme="dark"] .setting-info h3 {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .setting-desc {
+  color: #999999;
+}
+
+[data-theme="dark"] .setting-value {
+  color: #d0d0d0;
+}
+
+[data-theme="dark"] .theme-btn {
+  background-color: #1a1a1a;
+  border-color: #333333;
+  color: #ffffff;
+}
+
+[data-theme="dark"] .theme-btn:hover {
   border-color: #667eea;
 }
 
-.theme-btn.active {
+[data-theme="dark"] .theme-btn.active {
   background-color: #667eea;
   color: white;
   border-color: #667eea;
+}
+
+[data-theme="dark"] .btn-secondary {
+  background-color: #333333;
+  color: #ffffff;
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+  background-color: #444444;
+}
+
+[data-theme="dark"] .edit-name-input {
+  background-color: #1a1a1a;
+  border-color: #667eea;
+  color: #ffffff;
+}
+
+[data-theme="dark"] .edit-name-input:focus {
+  border-color: #5568d3;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
 }
 
 .settings-footer {
