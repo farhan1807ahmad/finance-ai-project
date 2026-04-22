@@ -6,6 +6,7 @@ import Activity from './pages/Activity';
 import Analytics from './pages/Analytics';
 import Budgets from './pages/Budgets';
 import Insights from './pages/Insights';
+import Prediction from './pages/Prediction';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
@@ -78,6 +79,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Insights onPageChange={setCurrentPage} />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/predictions" 
+                element={
+                  <ProtectedRoute>
+                    <Prediction onPageChange={setCurrentPage} />
                   </ProtectedRoute>
                 } 
               />

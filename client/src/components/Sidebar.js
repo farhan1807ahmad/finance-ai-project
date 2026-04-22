@@ -37,6 +37,10 @@ function Sidebar() {
           <span className="nav-icon">🤖</span>
           <span className="nav-text">Insights (AI)</span>
         </Link>
+        <Link to="/predictions" className={`nav-item ${isActive('/predictions') ? 'active' : ''}`}>
+          <span className="nav-icon">🔮</span>
+          <span className="nav-text">Predictions</span>
+        </Link>
         <Link to="/analytics" className={`nav-item ${isActive('/analytics') ? 'active' : ''}`}>
           <span className="nav-icon">📉</span>
           <span className="nav-text">Analytics</span>
@@ -45,10 +49,6 @@ function Sidebar() {
           <span className="nav-icon">💼</span>
           <span className="nav-text">Budgets</span>
         </Link>
-        <div className="nav-item">
-          <span className="nav-icon">🔮</span>
-          <span className="nav-text">Predictions</span>
-        </div>
         <Link to="/settings" className={`nav-item ${isActive('/settings') ? 'active' : ''}`}>
           <span className="nav-icon">⚙️</span>
           <span className="nav-text">Settings</span>

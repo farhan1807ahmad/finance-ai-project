@@ -4,6 +4,10 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const { addExpense, getExpenses, deleteExpense } = require("./db");
 const User = require("./models/User");
+const ExpensePredictionModel = require("../ml-model/expensePrediction");
+const BudgetManager = require("../ml-model/budgetManager");
+const AnomalyDetectionModel = require("../ml-model/anomalyDetection");
+const BudgetOptimizationModel = require("../ml-model/budgetOptimization");
 
 // Initialize OpenAI (optional - install with: npm install openai)
 let OpenAI;
@@ -349,6 +353,249 @@ Keep the response concise and actionable.`;
     console.error("AI Insights Error:", error.message);
     res.status(500).json({ 
       error: "Failed to generate insights: " + error.message 
+    });
+  }
+});
+
+// ============ EXPENSE PREDICTION ENDPOINT ============
+
+app.get("/predictions/expense", async (req, res) => {
+  try {
+    const expenses = getExpenses();
+
+    if (expenses.length === 0) {
+      return res.status(200).json({
+        error: "No expense data available yet. Start adding expenses to get spending predictions!",
+        predictions: {}
+      });
+    }
+
+    // Generate forecast using ML model
+    const forecast = ExpensePredictionModel.generateForecast(expenses);
+
+    res.status(200).json({
+      forecast: forecast,
+      generated_at: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error("Expense Prediction Error:", error.message);
+    res.status(500).json({ 
+      error: "Failed to generate predictions: " + error.message 
+    });
+  }
+});
+
+// ============ BUDGET MANAGEMENT ENDPOINTS ============
+
+app.post("/budgets/set", (req, res) => {
+  try {
+    const { category, amount } = req.body;
+    
+    if (!category || !amount) {
+      return res.status(400).json({ error: "Category and amount are required" });
+    }
+
+    const budget = BudgetManager.setBudget(category, amount);
+    res.status(201).json({
+      message: "Budget set successfully",
+      budget
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.get("/budgets", (req, res) => {
+  try {
+    const budgets = BudgetManager.getAllBudgets();
+    res.status(200).json(budgets);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get("/budgets/:category", (req, res) => {
+  try {
+    const { category } = req.params;
+    const budget = BudgetManager.getBudget(category);
+    
+    if (!budget) {
+      return res.status(404).json({ error: "Budget not found" });
+    }
+
+    res.status(200).json(budget);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete("/budgets/:category", (req, res) => {
+  try {
+    const { category } = req.params;
+    const success = BudgetManager.deleteBudget(category);
+    
+    if (!success) {
+      return res.status(404).json({ error: "Budget not found" });
+    }
+
+    res.status(200).json({ message: "Budget deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get("/budgets-summary", (req, res) => {
+  try {
+    const expenses = getExpenses();
+    const summary = BudgetManager.getBudgetSummary(expenses);
+    
+    res.status(200).json({
+      summary,
+      generated_at: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ============ ANOMALY DETECTION ENDPOINT ============
+
+app.get("/anomalies/detect", (req, res) => {
+  try {
+    const expenses = getExpenses();
+
+    if (expenses.length === 0) {
+      return res.status(200).json({
+        error: "No expense data available",
+        report: {}
+      });
+    }
+
+    const report = AnomalyDetectionModel.generateAnomalyReport(expenses);
+
+    res.status(200).json({
+      report,
+      generated_at: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error("Anomaly Detection Error:", error.message);
+    res.status(500).json({ 
+      error: "Failed to detect anomalies: " + error.message 
+    });
+  }
+});
+
+// ============ BUDGET OPTIMIZATION ENDPOINT ============
+
+app.get("/optimize/budgets", (req, res) => {
+  try {
+    const expenses = getExpenses();
+
+    if (expenses.length === 0) {
+      return res.status(200).json({
+        error: "No expense data available",
+        optimization: {}
+      });
+    }
+
+    const optimization = BudgetOptimizationModel.suggestOptimalBudgets(expenses);
+    const budgets = BudgetManager.getAllBudgets();
+    const health = BudgetOptimizationModel.calculateBudgetHealth(expenses, budgets);
+
+    res.status(200).json({
+      optimization,
+      budget_health: health,
+      generated_at: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error("Budget Optimization Error:", error.message);
+    res.status(500).json({ 
+      error: "Failed to optimize budgets: " + error.message 
+    });
+  }
+});
+
+// ============ EXPORT PREDICTIONS ENDPOINT ============
+
+app.get("/export/predictions", (req, res) => {
+  try {
+    const expenses = getExpenses();
+
+    if (expenses.length === 0) {
+      return res.status(200).json({
+        error: "No expense data available"
+      });
+    }
+
+    const forecast = ExpensePredictionModel.generateForecast(expenses);
+    const budgetSummary = BudgetManager.getBudgetSummary(expenses);
+
+    // Create CSV format
+    let csv = "Expense Prediction Export\n";
+    csv += `Generated: ${new Date().toISOString()}\n\n`;
+    
+    csv += "BUDGET SUMMARY\n";
+    csv += "Total Monthly Prediction,₹" + forecast.total_predicted_next_month + "\n";
+    csv += "Total Budgets,₹" + budgetSummary.total_limit + "\n";
+    csv += "Total Spent,₹" + budgetSummary.total_spent + "\n";
+    csv += "Budget Health," + budgetSummary.budget_health + "%\n\n";
+
+    csv += "CATEGORY PREDICTIONS\n";
+    csv += "Category,Historical Avg,Trend,Next Month Prediction,Lower Bound,Upper Bound,Confidence\n";
+
+    Object.entries(forecast.predictions).forEach(([category, data]) => {
+      const pred = data.predictions[0];
+      csv += `${category},₹${data.historical_average},${data.trend_direction},₹${pred.predicted},₹${pred.lower_bound},₹${pred.upper_bound},${pred.confidence.toFixed(0)}%\n`;
+    });
+
+    csv += "\n\nHIGH RISK CATEGORIES\n";
+    csv += "Category,Predicted Amount,Trend Strength\n";
+    forecast.high_risk_categories.forEach(risk => {
+      csv += `${risk.category},₹${risk.predicted},₹${risk.trend_strength.toFixed(2)}/month\n`;
+    });
+
+    res.header("Content-Type", "text/csv");
+    res.header("Content-Disposition", "attachment; filename=predictions.csv");
+    res.send(csv);
+  } catch (error) {
+    console.error("Export Error:", error.message);
+    res.status(500).json({ 
+      error: "Failed to export predictions: " + error.message 
+    });
+  }
+});
+
+app.get("/export/full-report", (req, res) => {
+  try {
+    const expenses = getExpenses();
+
+    if (expenses.length === 0) {
+      return res.status(200).json({
+        error: "No expense data available"
+      });
+    }
+
+    const forecast = ExpensePredictionModel.generateForecast(expenses);
+    const anomalies = AnomalyDetectionModel.generateAnomalyReport(expenses);
+    const optimization = BudgetOptimizationModel.suggestOptimalBudgets(expenses);
+    const budgetSummary = BudgetManager.getBudgetSummary(expenses);
+
+    // Return comprehensive JSON report
+    const report = {
+      generated_at: new Date().toISOString(),
+      forecast,
+      anomalies,
+      optimization,
+      budget_summary: budgetSummary
+    };
+
+    res.header("Content-Type", "application/json");
+    res.header("Content-Disposition", "attachment; filename=full-report.json");
+    res.json(report);
+  } catch (error) {
+    console.error("Export Error:", error.message);
+    res.status(500).json({ 
+      error: "Failed to export report: " + error.message 
     });
   }
 });
