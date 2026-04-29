@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
+const axios = require("axios");
 require("dotenv").config();
 const { addExpense, getExpenses, deleteExpense } = require("./db");
 const User = require("./models/User");
@@ -126,9 +127,23 @@ app.post("/add-expense", async (req, res) => {
 
     const newExpense = addExpense(description, parseFloat(amount), category, notes);
 
+    // Check for anomalies using ML service
+    let anomalyCheck = { is_anomaly: false, message: "Normal expense" };
+    try {
+      const anomalyResponse = await axios.post('http://localhost:8000/anomaly', {
+        amount: parseFloat(amount),
+        category: category
+      }, { timeout: 5000 });
+      anomalyCheck = anomalyResponse.data;
+    } catch (error) {
+      console.log("⚠️  ML anomaly check unavailable, skipping...");
+      // Continue without anomaly check if ML service is down
+    }
+
     res.status(201).json({
       message: "Expense added successfully",
-      data: newExpense
+      data: newExpense,
+      anomaly_check: anomalyCheck
     });
 
   } catch (error) {
@@ -596,6 +611,75 @@ app.get("/export/full-report", (req, res) => {
     console.error("Export Error:", error.message);
     res.status(500).json({ 
       error: "Failed to export report: " + error.message 
+    });
+  }
+});
+
+// ============ ML MODEL PROXY ROUTES ============
+
+const ML_URL = 'http://localhost:8000';
+
+// ML: Spending Predictions
+app.post("/ml/predict", async (req, res) => {
+  try {
+    const response = await axios.post(`${ML_URL}/predict`, req.body, { timeout: 10000 });
+    res.json(response.data);
+  } catch (error) {
+    console.error("ML Predict Error:", error.message);
+    res.status(error.response?.status || 500).json({
+      error: "Failed to get spending prediction: " + error.message
+    });
+  }
+});
+
+// ML: Anomaly Detection
+app.post("/ml/anomaly", async (req, res) => {
+  try {
+    const response = await axios.post(`${ML_URL}/anomaly`, req.body, { timeout: 10000 });
+    res.json(response.data);
+  } catch (error) {
+    console.error("ML Anomaly Error:", error.message);
+    res.status(error.response?.status || 500).json({
+      error: "Failed to detect anomalies: " + error.message
+    });
+  }
+});
+
+// ML: Spending Trends
+app.get("/ml/trends", async (req, res) => {
+  try {
+    const response = await axios.get(`${ML_URL}/trends`, { timeout: 10000 });
+    res.json(response.data);
+  } catch (error) {
+    console.error("ML Trends Error:", error.message);
+    res.status(error.response?.status || 500).json({
+      error: "Failed to fetch spending trends: " + error.message
+    });
+  }
+});
+
+// ML: Retrain Models
+app.post("/ml/retrain", async (req, res) => {
+  try {
+    const response = await axios.post(`${ML_URL}/retrain`, {}, { timeout: 120000 });
+    res.json(response.data);
+  } catch (error) {
+    console.error("ML Retrain Error:", error.message);
+    res.status(error.response?.status || 500).json({
+      error: "Failed to retrain models: " + error.message
+    });
+  }
+});
+
+// ML: Health Check
+app.get("/ml/health", async (req, res) => {
+  try {
+    const response = await axios.get(`${ML_URL}/health`, { timeout: 5000 });
+    res.json(response.data);
+  } catch (error) {
+    res.status(503).json({
+      error: "ML service unavailable",
+      message: error.message
     });
   }
 });
